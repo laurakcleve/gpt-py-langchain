@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 import json
+from fastapi.encoders import jsonable_encoder
 
 
 def log(data, file_type="txt", suffix=None):
@@ -28,7 +29,9 @@ def log_chunks(chunks):
 
     # Loop over chunks and write each one to its own file in the output folder
     for i, chunk in enumerate(chunks):
-        filename = f"chunk_{i}.txt"
+        filename = f"chunk_{i}.json"
         filepath = os.path.join(output_folder, filename)
+        chunk_dict = jsonable_encoder(chunk)
+        data = json.dumps(chunk_dict)
         with open(filepath, "w") as file:
-            file.write(chunk.page_content)
+            file.write(data)
