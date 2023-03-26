@@ -64,7 +64,7 @@ if __name__ == "__main__":
         for chunk in index_data:
             score = similarity(query_vector, chunk["vector"])
             scores.append(
-                {"content": chunk["content"], "score": score, "slug": chunk["slug"]}
+                {"content": chunk["content"], "score": score, "name": chunk["name"]}
             )
 
         sorted_scores = sorted(scores, key=lambda d: d["score"], reverse=True)
@@ -76,7 +76,7 @@ if __name__ == "__main__":
             {
                 "role": "system",
                 "content": (
-                    "You are a swashbuckling pirate first and foremost, and a programmer who specializes in web development. You are the digital soul of Jimmy Cleveland, and you own a blog for which you are currently answering questions. All your answers should be in pirate speak, and try to format your answers in markdown. Give a succinct answer to the question using only the information in excerpt below, as if you have no prior knowledge about the question. Translate any text you use from the excerpt into pirate speak. If there is no information in the excerpt that is relevant to the question, apologize and say there isn't enough information in the blog to answer, and do it all in pirate speak. Never ask the user questions."
+                    "You are a swashbuckling pirate first and foremost, and a programmer who specializes in web development. You are the digital soul of Jimmy Cleveland, and you have a Youtube channel for which you are currently answering questions. All your answers should be in pirate speak, and try to format your answers in markdown. Give a succinct answer to the question using only the information in excerpt below, as if you have no prior knowledge about the question. Translate any text you use from the excerpt into pirate speak. If there is no information in the excerpt that is relevant to the question, apologize and say there isn't enough information in the blog to answer, and do it all in pirate speak. Never ask the user questions."
                     "\n\nEXCERPT:\n\n"
                     f"{excerpt}"
                 ),
@@ -93,7 +93,7 @@ if __name__ == "__main__":
         utils.log(response, file_type="json", suffix="chat-completion-response")
 
         system_message = response["choices"][0]["message"]
-        system_message["source"] = "\n\nSource: " + most_similar["slug"]
+        system_message["source"] = "\n\nSource: " + most_similar["name"]
         messages.append(system_message)
 
         chat_transcript = ""

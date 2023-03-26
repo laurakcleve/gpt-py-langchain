@@ -1,5 +1,5 @@
 import glob
-from langchain.text_splitter import MarkdownTextSplitter
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 import utils
 from dotenv import load_dotenv
 import openai
@@ -25,16 +25,16 @@ def write_index(index):
 
 if __name__ == "__main__":
     files = list()
-    slugs = list()
+    names = list()
 
-    for file in glob.glob("input/*.md"):
-        slugs.append({"slug": file.replace("input/", "").replace(".md", "")})
+    for file in glob.glob("input/*.txt"):
+        names.append({"name": file.replace("input/", "").replace(".md", "")})
         with open(file, "r") as f:
             files.append(f.read())
 
-    markdown_splitter = MarkdownTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=0)
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE, chunk_overlap=0)
 
-    chunks = markdown_splitter.create_documents(files, metadatas=slugs)
+    chunks = text_splitter.create_documents(files, metadatas=names)
 
     utils.log_chunks(chunks)
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         index.append(
             {
                 "content": chunk.page_content,
-                "slug": chunk.metadata["slug"],
+                "name": chunk.metadata["name"],
                 "vector": vector,
             }
         )
